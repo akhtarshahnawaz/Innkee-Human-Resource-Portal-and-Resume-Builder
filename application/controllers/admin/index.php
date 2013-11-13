@@ -73,6 +73,7 @@ class Index extends CI_Controller
             $data['email']=$values['email'];
             $data['type']=$values['type'];
 
+            $data['title']="Send Email";
             $this->load->view('admin/struct/head',$data);
             $this->load->view('admin/struct/header');
             $this->load->view('admin/EmailSender',$data);
