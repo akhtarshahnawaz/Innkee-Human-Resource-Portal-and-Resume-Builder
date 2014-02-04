@@ -244,7 +244,6 @@ if($hasNotification):
             <th></th>
             <th>Name</th>
             <th>Phone</th>
-            <th>Email</th>
             <th>Address</th>
 
             <th></th>
@@ -253,7 +252,6 @@ if($hasNotification):
         <tr>
             <td><?php echo $key+1; ?></td>
             <td><?php echo $value['name']; ?></td>
-            <td><?php echo $value['email']; ?></td>
             <td><?php echo $value['phone']; ?></td>
             <td><?php echo $value['location']; ?></td>
             <td>

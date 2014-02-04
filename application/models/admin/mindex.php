@@ -132,9 +132,19 @@ class Mindex extends CI_Model
             $exp=explode('$-$',$exp);
             $realExp=($exp[0]*12)+$exp[1];
 
-            if($realExp<$experience || $value['currentCTC']<=$data['inputCurrentCTC']){
+            if($data['inputYear']!='null' || $data['inputMonths']!='null'){
+                if($realExp<$experience || $value['currentCTC']<=$data['inputCurrentCTC']){
                 unset($result[$key]);
+                }
             }
+
+            if($data['inputCurrentCTC']!=''){
+                if($value['currentCTC']<=$data['inputCurrentCTC']){
+                    unset($result[$key]);
+                }
+            }
+
+
         }
         return $result;
     }

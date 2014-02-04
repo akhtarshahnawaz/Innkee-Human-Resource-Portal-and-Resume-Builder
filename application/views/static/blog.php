@@ -60,7 +60,7 @@ $ci->load->library('session');
 
      <div class="row-fluid">
         <div class="span12 well">
-          <h2 align="center">Three things you should always care in Interview</h2>
+          <h2 align="center"></h2>
           <p></p>
       </div>
       </div>
