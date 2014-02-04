@@ -25,7 +25,7 @@ class Index extends CI_Controller
     }
 
     public function jobSeekers(){
-        if(!$this->session->userdata('adminLoggedIn')){
+        if($this->session->userdata('adminLoggedIn')){
 
             $this->load->model('admin/mindex');
             $data['data']=$this->mindex->getAllJobseekers();
@@ -35,11 +35,13 @@ class Index extends CI_Controller
             $this->load->view('admin/struct/header');
             $this->load->view('admin/jobSeekers',$data);
             $this->load->view('admin/struct/footer');
+        }else{
+            redirect('index/login','refresh');
         }
     }
 
     public function interns(){
-        if(!$this->session->userdata('adminLoggedIn')){
+        if($this->session->userdata('adminLoggedIn')){
 
             $this->load->model('admin/mindex');
             $data['data']=$this->mindex->getAllInterns();
@@ -49,11 +51,13 @@ class Index extends CI_Controller
             $this->load->view('admin/struct/header');
             $this->load->view('admin/interns',$data);
             $this->load->view('admin/struct/footer');
+        }else{
+            redirect('index/login','refresh');
         }
     }
 
     public function employers(){
-        if(!$this->session->userdata('adminLoggedIn')){
+        if($this->session->userdata('adminLoggedIn')){
 
             $this->load->model('admin/mindex');
             $data['data']=$this->mindex->getAllEmployers();
@@ -63,6 +67,8 @@ class Index extends CI_Controller
             $this->load->view('admin/struct/header');
             $this->load->view('admin/employer',$data);
             $this->load->view('admin/struct/footer');
+        }else{
+            redirect('index/login','refresh');
         }
     }
 

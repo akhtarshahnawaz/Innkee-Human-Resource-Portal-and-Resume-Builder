@@ -19,11 +19,14 @@ $employer=$ci->session->userdata('employerLoggedIn');
             <a class="brand" href="<?php echo site_url('');?>"><img src="<?php linkAsset('images/logo.png'); ?>"  width="120px" height="50px"/></a>
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <?php if($admin || $employer):?>
+                    <?php if($employer):?>
                         <li class="active"><a href="<?php echo site_url('admin/index/index');?>">Home</a></li>
                         <li class="active"><a href="<?php echo site_url('admin/job/addJob');?>">Post a Job</a></li>
                         <li class="active"><a href="<?php echo site_url('admin/job/index');?>">My Jobs</a></li>
                     <?php elseif($admin): ?>
+                        <li class="active"><a href="<?php echo site_url('admin/index/index');?>">Home</a></li>
+                        <li class="active"><a href="<?php echo site_url('admin/job/addJob');?>">Post a Job</a></li>
+                        <li class="active"><a href="<?php echo site_url('admin/job/index');?>">My Jobs</a></li>
                         <li class="active"><a href="<?php echo site_url('admin/index/interns');?>">Interns</a></li>
                         <li class="active"><a href="<?php echo site_url('admin/index/jobSeekers');?>">JobSeekers</a></li>
                         <li class="active"><a href="<?php echo site_url('admin/index/employers');?>">Employers</a></li>
