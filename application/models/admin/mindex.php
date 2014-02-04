@@ -109,4 +109,35 @@ class Mindex extends CI_Model
     }
 
 
+    public function searchBasic($data){
+        $experience=($data['inputYear']*12)+$data['inputMonths'];
+
+        $this->db->select('*');
+        $this->db->from('login');
+        $this->db->join('applicants','applicants.fkey_login=login.pkey','left');
+        $this->db->having('type',$data['type']);
+
+        if($data['inputIndustry']!='null'){
+            $this->db->having('currentIndustry',$data['inputIndustry']);
+        }
+        if($data['inputFunctionalArea']!='null'){
+            $this->db->having('currentFunctionalArea',$data['inputFunctionalArea']);
+        }
+
+        $query=$this->db->get();
+        $result=$query->result_array();
+
+        foreach($result as $key=>$value){
+            $exp=$value['experience'];
+            $exp=explode('$-$',$exp);
+            $realExp=($exp[0]*12)+$exp[1];
+
+            if($realExp<$experience || $value['currentCTC']<=$data['inputCurrentCTC']){
+                unset($result[$key]);
+            }
+        }
+        return $result;
+    }
+
+
 }

@@ -4,31 +4,43 @@ class Index extends CI_Controller
 {
     function __construct(){
         parent::__construct();
-        if(!$this->session->userdata('adminLoggedIn')){
-            redirect('admin/authentication/login','refresh');
+        if(!$this->session->userdata('adminLoggedIn') && !$this->session->userdata('employerLoggedIn')){
+            redirect('index/login','refresh');
         }
     }
 
     public function index(){
-        $data['title']="Admin Panel";
+        $data=$this->input->post();
+        if(!empty($data)){
+            $this->load->model('admin/mindex');
+            $data['data']=$this->mindex->searchBasic($data);
+            $data['title']="Search Result";
+        }else{
+            $data['title']="Adminstrator Panel";
+        }
         $this->load->view('admin/struct/head',$data);
         $this->load->view('admin/struct/header');
-        $this->load->view('admin/index');
+        $this->load->view('admin/index',$data);
         $this->load->view('admin/struct/footer');
     }
 
     public function jobSeekers(){
-        $this->load->model('admin/mindex');
-        $data['data']=$this->mindex->getAllJobseekers();
-        $data['title']="Registered JobSeekers";
+        if(!$this->session->userdata('adminLoggedIn')){
 
-        $this->load->view('admin/struct/head',$data);
-        $this->load->view('admin/struct/header');
-        $this->load->view('admin/jobSeekers',$data);
-        $this->load->view('admin/struct/footer');
+            $this->load->model('admin/mindex');
+            $data['data']=$this->mindex->getAllJobseekers();
+            $data['title']="Registered JobSeekers";
+
+            $this->load->view('admin/struct/head',$data);
+            $this->load->view('admin/struct/header');
+            $this->load->view('admin/jobSeekers',$data);
+            $this->load->view('admin/struct/footer');
+        }
     }
 
     public function interns(){
+        if(!$this->session->userdata('adminLoggedIn')){
+
             $this->load->model('admin/mindex');
             $data['data']=$this->mindex->getAllInterns();
             $data['title']="Registered Interns";
@@ -37,17 +49,21 @@ class Index extends CI_Controller
             $this->load->view('admin/struct/header');
             $this->load->view('admin/interns',$data);
             $this->load->view('admin/struct/footer');
+        }
     }
 
     public function employers(){
-        $this->load->model('admin/mindex');
-        $data['data']=$this->mindex->getAllEmployers();
-        $data['title']="Registered Employers";
+        if(!$this->session->userdata('adminLoggedIn')){
 
-        $this->load->view('admin/struct/head',$data);
-        $this->load->view('admin/struct/header');
-        $this->load->view('admin/employer',$data);
-        $this->load->view('admin/struct/footer');
+            $this->load->model('admin/mindex');
+            $data['data']=$this->mindex->getAllEmployers();
+            $data['title']="Registered Employers";
+
+            $this->load->view('admin/struct/head',$data);
+            $this->load->view('admin/struct/header');
+            $this->load->view('admin/employer',$data);
+            $this->load->view('admin/struct/footer');
+        }
     }
 
     public function viewApplicant($id=null){
