@@ -25,8 +25,8 @@ if($hasNotification):
 
 <div class="well" style="margin-top: -30px;">
     <?php   $this->load->helper('form');
-    $attributes = array('class' => 'form-horizontal ');
-    echo form_open('admin/index', $attributes); ?>
+$attributes = array('class' => 'form-horizontal');
+echo form_open('admin/index', $attributes); ?>
     <input name="searchType" value="advanced" type="hidden">
 
     <div class="input-append span11 offset2">
@@ -47,27 +47,37 @@ if($hasNotification):
 <div class="well">
     <div class="">
         <?php   $this->load->helper('form');
-        $attributes = array('class' => 'form-horizontal ');
+        $attributes = array('class' => 'form-horizontal','method'=>'get');
         echo form_open('admin/index', $attributes); ?>
 
         <p class="lead" align="center" style="margin: 0px;">Search Database</p>
 
         <input name="searchType" value="basic" type="hidden">
 
+
         <div class="controls controls-row">
             <label class="radio inline">
-                <input type="radio" name="type" id="optionsRadios2" value="jobSeeker" checked="">
+                <input type="radio" name="type" id="optionsRadios2" value="jobSeeker" checked="" <?php if(isset($_GET['type']) && $_GET['type']=='jobSeeker'){ echo 'checked="true"'; }?> >
                 Job Seekers
             </label>
             <label class="radio inline">
-                <input type="radio" name="type" id="optionsRadios1" value="intern">
+                <input type="radio" name="type" id="optionsRadios1" value="intern" <?php if(isset($_GET['type']) && $_GET['type']=='intern'){ echo 'checked="true"'; }?> >
                 Internship Seekers
             </label>
         </div>
         </br>
 
+    <div class="controls controls-row">
+
+        <input type="text" class="span4" name="name"  value="<?php if(isset($_GET['name'])){ echo $_GET['name']; }?>" placeholder="Name">
+        <input type="email" class="span4" name="email"  value="<?php if(isset($_GET['email'])){ echo $_GET['email']; } ?>" placeholder="Email">
+        <input type="text" class="span4" name="location"  value="<?php if(isset($_GET['location'])){ echo $_GET['location']; }?>" placeholder="Location">
+
+
+    </div>
+    </br>
         <div class="controls controls-row">
-            <select name="inputYear" class="span4" id="inputYear">
+            <select name="inputYear" class="span4" id="inputYear" lastSelected="<?php if(isset($_GET['inputYear'])){ echo $_GET['inputYear']; }?>">
                 <option value="null" selected="selected">Min. Experience (Years) </option>
                 <option value="0">Fresher</option>
                 <option value="1">1 Year</option>
@@ -92,7 +102,7 @@ if($hasNotification):
                 <option value="20">20 Year</option>
                 <option value="20+">20+ Year</option>
             </select>
-            <select name="inputMonths" class="span4" id="inputMonths">
+            <select name="inputMonths" class="span4" id="inputMonths" lastSelected="<?php if(isset($_GET['inputMonths'])){ echo $_GET['inputMonths']; }?>">
                 <option value="null" selected="selected"> Min. Experience (Months) </option>
                 <option value="1">1 Month</option>
                 <option value="2">2 Month</option>
@@ -107,13 +117,13 @@ if($hasNotification):
                 <option value="11">11 Month</option>
                 <option value="12">12 Month</option>
             </select>
-            <input type="text" class="span4" name="inputCurrentCTC"  value="" id="inputCurrentCTC" placeholder="Max Current CTC/annum">
+            <input type="text" class="span4" name="inputCurrentCTC"  value="<?php if(isset($_GET['inputCurrentCTC'])){ echo $_GET['inputCurrentCTC']; }?>" id="inputCurrentCTC" placeholder="Max Current CTC/annum">
 
         </div>
         </br>
 
         <div class="controls controls-row">
-            <select name="inputIndustry" class="span4" id="inputIndustry">
+            <select name="inputIndustry" class="span4" id="inputIndustry" lastSelected="<?php if(isset($_GET['inputIndustry'])){ echo $_GET['inputIndustry']; }?>">
                 <option value="null" selected="selected">Select Industry</option>
                 <option value="Accounting/Finance" >Accounting/Finance</option>
                 <option value="Advertising/PR/MR/Events" >Advertising/PR/MR/Events</option>
@@ -176,7 +186,7 @@ if($hasNotification):
                 <option value="Other" >Other</option>
             </select>
 
-            <select name="inputFunctionalArea" class="span4" id="inputFunctionalArea">
+            <select name="inputFunctionalArea" class="span4" id="inputFunctionalArea" lastSelected="<?php if(isset($_GET['inputFunctionalArea'])){ echo $_GET['inputFunctionalArea']; }?>">
                 <option value="null" selected="true">Functional Area</option>
                 <option value="Accounts / Finance / Tax / CS / Audit" >Accounts / Finance / Tax / CS / Audit</option>
                 <option value="Agent" >Agent</option>
@@ -239,38 +249,73 @@ if($hasNotification):
 
     <div class="well">
 
-    <table class="table table-condensed table-striped table-bordered">
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Address</th>
+        <table class="table table-condensed table-striped table-bordered">
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Address</th>
 
-            <th></th>
-        </tr>
-        <?php foreach($data as $key=>$value):?>
-        <tr>
-            <td><?php echo $key+1; ?></td>
-            <td><?php echo $value['name']; ?></td>
-            <td><?php echo $value['phone']; ?></td>
-            <td><?php echo $value['location']; ?></td>
-            <td>
-                <div class="btn-group">
-                    <a  class="btn btn-success btn-mini" href="<?php echo site_url('admin/index/viewApplicant/'.$value['fkey_login'])?>">View</a>
-                    <a class="btn btn-info btn-mini" href="<?php echo site_url('admin/index/sendMail/'.$value['fkey_login'])?>">Send Message</a>
+                <th></th>
+            </tr>
+            <?php foreach($data as $key=>$value):?>
+            <tr>
+                <td><?php echo $key+1; ?></td>
+                <td><?php echo $value['name']; ?></td>
+                <td><?php echo $value['phone']; ?></td>
+                <td><?php echo $value['location']; ?></td>
+                <td>
+                    <div class="btn-group">
+                        <a  class="btn btn-success btn-mini" href="<?php echo site_url('admin/index/viewApplicant/'.$value['fkey_login'])?>">View</a>
+                        <a class="btn btn-info btn-mini" href="<?php echo site_url('admin/index/sendMail/'.$value['fkey_login'])?>">Send Message</a>
 
-                </div>
-            </td>
-        </tr>
-        <?php
-    endforeach; ?>
-    </table>
-</div>
+                        <?php if($this->session->userdata('adminLoggedIn')):?>
+                            <?php if($value['loginStatus']==0):?>
+                                <a class="btn btn-mini btn-warning" href="<?php echo site_url('admin/index/unStopAccess/'.$value['loginKey'])?>">Provoke Access</a>
+                                <?php elseif($value['loginStatus']>0):?>
+                                <a class="btn btn-mini btn-danger" href="<?php echo site_url('admin/index/stopAccess/'.$value['loginKey'])?>">Revoke Access</a>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                    </div>
+                </td>
+            </tr>
+            <?php
+        endforeach; ?>
+        </table>
+
+        <!-- Pagination Start-->
+        <div class="pagination">
+            <?php
+            $rurl=$_SERVER['REQUEST_URI'];
+            $rurl=explode('?',$rurl);
+            $rurl=$rurl[1];
+            if(isset($totalEntries)){
+                $totalPages=$totalEntries/$this->config->item('maxPageSize');
+            }
+            ?>
+            <ul>
+                <?php if(($page-1)>=0):?>
+                <li><a href="<?php echo site_url('admin/index/index').'/'.($page-1).'?'.$rurl;?>">Prev</a></li>
+                <?php endif; ?>
+                <?php for($i=0;$i<$totalPages;$i++):?>
+                <li <?php if($i==$page){ echo 'class="disabled"';}?> ><a href="<?php echo site_url('admin/index/index').'/'.$i.'?'.$rurl;?>"><?php echo $i+1 ?></a></li>
+                <?php endfor; ?>
+                <?php if(($page+1)<$totalPages):?>
+
+                <li><a href="<?php echo site_url('admin/index/index').'/'.($page+1).'?'.$rurl;?>">Next</a></li>
+                <?php endif; ?>
+
+            </ul>
+        </div>
+        <!-- PAGINATION END-->
+
+    </div>
         <?php else: ?>
-<div class="well">
-   <p class="text-error" align="center">Sorry..No Results Found..</p>
-</div>
-    <?php endif; ?>
+    <div class="well">
+        <p class="text-error" align="center">Sorry..No Results Found..</p>
+    </div>
+        <?php endif; ?>
 
     <?php endif; ?>
 </div>
@@ -278,3 +323,25 @@ if($hasNotification):
 loadAsset(array('jquery-1.7.1.min.js'=>'script','jquery-ui.css'=>'style','jquery-ui.js'=>'script'));
 loadBootstrap('script.min');
 ?>
+
+
+<script type="text/javascript">
+
+    var expYears =$('#inputYear').attr('lastSelected');
+    var expYearsItems=$('#inputYear').children('option[value="'+expYears+'"]');
+    expYearsItems.attr('selected','selected');
+
+    var expMonths =$('#inputMonths').attr('lastSelected');
+    var expMonthsItems=$('#inputMonths').children('option[value="'+expMonths+'"]');
+    expMonthsItems.attr('selected','selected');
+
+    var industry =$('#inputIndustry').attr('lastSelected');
+    var industryItems=$('#inputIndustry').children('option[value="'+industry+'"]');
+    industryItems.attr('selected','selected');
+
+
+    var functionalArea =$('#inputFunctionalArea').attr('lastSelected');
+    var functionalAreaItems=$('#inputFunctionalArea').children('option[value="'+functionalArea+'"]');
+    functionalAreaItems.attr('selected','selected');
+
+</script>

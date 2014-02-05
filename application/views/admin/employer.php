@@ -44,11 +44,40 @@
             <td>
                 <div class="btn-group">
                     <a class="btn btn-info btn-mini" href="<?php echo site_url('admin/index/sendMail/'.$value['fkey_login_employer'])?>">Send Mail</a>
+
+                    <?php if($value['loginStatus']==0):?>
+                    <a class="btn btn-mini btn-warning" href="<?php echo site_url('admin/index/unStopAccess/'.$value['loginKey'])?>">Provoke Access</a>
+                    <?php elseif($value['loginStatus']>0):?>
+                    <a class="btn btn-mini btn-danger" href="<?php echo site_url('admin/index/stopAccess/'.$value['loginKey'])?>">Revoke Access</a>
+                    <?php endif; ?>
                 </div>
             </td>
         </tr>
         <?php endforeach; ?>
     </table>
+
+    <div class="pagination">
+        <?php
+        if(isset($totalEntries)){
+            $totalPages=$totalEntries/$this->config->item('maxPageSize');
+        }
+        ?>
+        <ul>
+            <?php if(($page-1)>=0):?>
+            <li><a href="<?php echo site_url('admin/index/employers').'/'.($page-1);?>">Prev</a></li>
+            <?php endif; ?>
+            <?php for($i=0;$i<$totalPages;$i++):?>
+            <li <?php if($i==$page){ echo 'class="disabled"';}?> ><a href="<?php echo site_url('admin/index/employers').'/'.$i;?>"><?php echo $i+1 ?></a></li>
+            <?php endfor; ?>
+            <?php if(($page+1)<$totalPages):?>
+
+            <li><a href="<?php echo site_url('admin/index/employers').'/'.($page+1);?>">Next</a></li>
+            <?php endif; ?>
+
+        </ul>
+    </div>
+    <!-- PAGINATION END-->
+
 </div>
 <?php
 loadAsset(array('jquery-1.7.1.min.js'=>'script','jquery-ui.css'=>'style','jquery-ui.js'=>'script'));

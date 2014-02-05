@@ -10,6 +10,7 @@ class Mindex extends CI_Model
     public function checkLogin($data){
         $this->db->where('email',$data['email']);
         $this->db->where('password',sha1($data['password']));
+        $this->db->where('status >',0);
         $query=$this->db->get('login');
         $result=$query->result_array();
 
@@ -76,7 +77,7 @@ class Mindex extends CI_Model
                     'email'=>$data['inputEmail'],
                     'password'=>sha1($data['inputPassword']),
                     'type'=>$data['type'],
-                    'status'=>0,
+                    'status'=>1,
                 );
 
                 $this->db->insert('login',$insert);
@@ -97,7 +98,7 @@ class Mindex extends CI_Model
                         'infoKey'=>$insertId2,
                         'username' => $data['inputEmail'],
                         'type' => $data['type'],
-                        'status'=>0,
+                        'status'=>1,
                         'loggedIn' => TRUE
                     );
                     $this->session->set_userdata($sessiondata);
@@ -121,7 +122,7 @@ class Mindex extends CI_Model
             'email'=>$data['inputEmail'],
             'password'=>sha1($data['inputPassword']),
             'type'=>$data['type'],
-            'status'=>0,
+            'status'=>1,
         );
 
         $this->db->insert('login',$insert);
@@ -144,7 +145,7 @@ class Mindex extends CI_Model
                 'infoKey'=>$insertId2,
                 'username' => $data['inputEmail'],
                 'type' => $data['type'],
-                'status'=>0,
+                'status'=>1,
                 'employerLoggedIn' => TRUE
             );
             $this->session->set_userdata($sessiondata);
@@ -254,7 +255,7 @@ class Mindex extends CI_Model
         $query=$this->db->get('login');
         $result=$query->result_array();
         if(!empty($result)){
-            $this->db->set('status', 1);
+            $this->db->set('status', 2);
             $this->db->where('verification',$vcode);
             if($this->db->update('login')){
                 $this->session->set_flashdata('notification', '<strong>Successfully Verified!</strong>');

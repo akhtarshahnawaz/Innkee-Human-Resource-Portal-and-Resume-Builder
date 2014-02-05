@@ -8,34 +8,67 @@ class Mindex extends CI_Model
     }
 
 
-    public function getAllInterns(){
-        $this->db->select('*');
+    public function getAllInterns($page){
+        $this->db->select('*,login.pkey as loginKey, login.status as loginStatus');
         $this->db->from('login');
         $this->db->join('applicants','applicants.fkey_login=login.pkey','left');
         $this->db->where('type','intern');
+        $this->db->limit($this->config->item('maxPageSize'), $this->config->item('maxPageSize')*$page);
         $query=$this->db->get();
         $result=$query->result_array();
         return $result;
     }
 
-    public function getAllJobseekers(){
-        $this->db->select('*');
+    public function countInterns(){
+        $this->db->select('*,login.pkey as loginKey, login.status as loginStatus');
+        $this->db->from('login');
+        $this->db->join('applicants','applicants.fkey_login=login.pkey','left');
+        $this->db->where('type','intern');
+        $totalResults=$this->db->count_all_results();
+        return $totalResults;
+    }
+
+    public function getAllJobseekers($page){
+        $this->db->select('*,login.pkey as loginKey, login.status as loginStatus');
         $this->db->from('login');
         $this->db->join('applicants','applicants.fkey_login=login.pkey','left');
         $this->db->where('type','jobSeeker');
+        $this->db->limit($this->config->item('maxPageSize'), $this->config->item('maxPageSize')*$page);
+
         $query=$this->db->get();
         $result=$query->result_array();
         return $result;
     }
 
-    public function getAllEmployers(){
-        $this->db->select('*');
+    public function countJobSeekers(){
+        $this->db->select('*,login.pkey as loginKey, login.status as loginStatus');
+        $this->db->from('login');
+        $this->db->join('applicants','applicants.fkey_login=login.pkey','left');
+        $this->db->where('type','jobSeeker');
+        $totalResults=$this->db->count_all_results();
+        return $totalResults;
+    }
+
+
+    public function getAllEmployers($page){
+        $this->db->select('*,login.pkey as loginKey, login.status as loginStatus');
         $this->db->from('login');
         $this->db->join('employer','employer.fkey_login_employer=login.pkey','left');
         $this->db->where('type','employer');
+        $this->db->limit($this->config->item('maxPageSize'), $this->config->item('maxPageSize')*$page);
+
         $query=$this->db->get();
         $result=$query->result_array();
         return $result;
+    }
+
+    public function countEmployers(){
+        $this->db->select('*,login.pkey as loginKey, login.status as loginStatus');
+        $this->db->from('login');
+        $this->db->join('employer','employer.fkey_login_employer=login.pkey','left');
+        $this->db->where('type','employer');
+        $totalResults=$this->db->count_all_results();
+        return $totalResults;
     }
 
 
@@ -108,11 +141,41 @@ class Mindex extends CI_Model
 
     }
 
+    public function stopAccess($userKey){
+        $this->db->set('status',0);
+        $this->db->where('pkey',$userKey);
+        $result=$this->db->update('login');
+        if($result){
+            $this->session->set_flashdata('notification', '<strong>Successfully Stopped Access!</strong>');
+            $this->session->set_flashdata('alertType', 'alert-success');
+        }else{
+            $this->session->set_flashdata('notification', '<strong>Error While Stopped Access!</strong>');
+            $this->session->set_flashdata('alertType', 'alert-error');
+        }
+        redirect($_SERVER['HTTP_REFERER'], 'refresh');
+
+    }
+
+    public function unStopAccess($userKey){
+        $this->db->set('status',2);
+        $this->db->where('pkey',$userKey);
+        $result=$this->db->update('login');
+        if($result){
+            $this->session->set_flashdata('notification', '<strong>Successfully Access Granted!</strong>');
+            $this->session->set_flashdata('alertType', 'alert-success');
+        }else{
+            $this->session->set_flashdata('notification', '<strong>Error While Granting Access!</strong>');
+            $this->session->set_flashdata('alertType', 'alert-error');
+        }
+        redirect($_SERVER['HTTP_REFERER'], 'refresh');
+
+    }
+
 
     public function searchBasic($data){
         $experience=($data['inputYear']*12)+$data['inputMonths'];
 
-        $this->db->select('*');
+        $this->db->select('*,login.pkey as loginKey, login.status as loginStatus');
         $this->db->from('login');
         $this->db->join('applicants','applicants.fkey_login=login.pkey','left');
         $this->db->having('type',$data['type']);
@@ -123,6 +186,16 @@ class Mindex extends CI_Model
         if($data['inputFunctionalArea']!='null'){
             $this->db->having('currentFunctionalArea',$data['inputFunctionalArea']);
         }
+        if($data['email']!='' && $data['email']!=null){
+            $this->db->having('email',$data['email']);
+        }
+        if($data['name']!='' && $data['name']!=null){
+            $this->db->like('name',$data['name']);
+        }
+        if($data['location']!='' && $data['location']!=null){
+            $this->db->like('location',$data['location']);
+        }
+
 
         $query=$this->db->get();
         $result=$query->result_array();
@@ -134,7 +207,7 @@ class Mindex extends CI_Model
 
             if($data['inputYear']!='null' || $data['inputMonths']!='null'){
                 if($realExp<$experience || $value['currentCTC']<=$data['inputCurrentCTC']){
-                unset($result[$key]);
+                    unset($result[$key]);
                 }
             }
 
@@ -146,7 +219,57 @@ class Mindex extends CI_Model
 
 
         }
-        return $result;
+        return array_Slice($result,0,($this->config->item('maxPageSize')-1));
+    }
+
+    public function countSearchBasic($data){
+        $experience=($data['inputYear']*12)+$data['inputMonths'];
+
+        $this->db->select('*,login.pkey as loginKey, login.status as loginStatus');
+        $this->db->from('login');
+        $this->db->join('applicants','applicants.fkey_login=login.pkey','left');
+        $this->db->having('type',$data['type']);
+
+        if($data['inputIndustry']!='null'){
+            $this->db->having('currentIndustry',$data['inputIndustry']);
+        }
+        if($data['inputFunctionalArea']!='null'){
+            $this->db->having('currentFunctionalArea',$data['inputFunctionalArea']);
+        }
+        if($data['email']!='' && $data['email']!=null){
+            $this->db->having('email',$data['email']);
+        }
+        if($data['name']!='' && $data['name']!=null){
+            $this->db->like('name',$data['name']);
+        }
+        if($data['location']!='' && $data['location']!=null){
+            $this->db->like('location',$data['location']);
+        }
+
+
+        $query=$this->db->get();
+        $result=$query->result_array();
+
+        foreach($result as $key=>$value){
+            $exp=$value['experience'];
+            $exp=explode('$-$',$exp);
+            $realExp=($exp[0]*12)+$exp[1];
+
+            if($data['inputYear']!='null' || $data['inputMonths']!='null'){
+                if($realExp<$experience || $value['currentCTC']<=$data['inputCurrentCTC']){
+                    unset($result[$key]);
+                }
+            }
+
+            if($data['inputCurrentCTC']!=''){
+                if($value['currentCTC']<=$data['inputCurrentCTC']){
+                    unset($result[$key]);
+                }
+            }
+
+
+        }
+        return count($result);
     }
 
 

@@ -363,6 +363,8 @@ $config['proxy_ips'] = '';
 
 
 $config['ImageUploadPath'] = 'uploads/';
+$config['maxPageSize'] = 50;
+
 
 
 /*EMAIL CONFIGURATIONS*/
